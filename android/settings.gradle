@@ -1,0 +1,3 @@
+rootProject.name = 'Mobx'
+
+include ':app'
