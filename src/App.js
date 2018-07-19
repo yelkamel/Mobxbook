@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
 import {
   Platform, 
@@ -13,12 +5,14 @@ import {
   Text, 
   View,
   Button,
+  ScrollView,
   TextInput} from 'react-native';
 import {enableLogging} from 'mobx-logger';
 import { observer } from 'mobx-react';
 
 import DeleteBookButton from './DeleteBookButton';
 import ReadBookView from './ReadBookView';
+import SearchSong from './SearchSong';
 
 // ajouts du store
 import BookStore from './BookStore';
@@ -82,7 +76,7 @@ class App extends Component {
     const {mangas} = MangaStore
 
     return (
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.welcome}>Book Management</Text>
 
         <View style={styles.subcontainer}>
@@ -129,7 +123,8 @@ class App extends Component {
           <Button onPress={this.addItem} title='ADD' />
 
         </View>
-      </View>
+        <SearchSong/>
+      </ScrollView>
     );
   }
 }
