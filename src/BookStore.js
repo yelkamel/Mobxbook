@@ -32,7 +32,7 @@ const BookStore = types.model('Books', {
   }
 }))
 .create({
-  books: [{ title: 'Mob Psycho ', author: '100', read : true}]
+  books: [{ title: 'Le Rouge et Le Noir', author: 'Stendhal', read : true}]
 })
 
 export default BookStore

@@ -7,6 +7,7 @@ import {
 import { observer } from 'mobx-react';
 
 import BookStore from './BookStore';
+import MangaStore from './MangaStore';
 
 type Props = {
 };
@@ -15,10 +16,11 @@ type Props = {
 @observer
 class ReadBookView extends Component<Props> {
   render() {
+    arrayTmp = BookStore.readBooks.concat(MangaStore.readMangas)
     return (
       <View style={styles.container}>
       {
-        BookStore.readBooks.map((books,index) => {
+          arrayTmp.map((books,index) => {
             return (<Text key={index}>{books.title}</Text>)
         })
       }

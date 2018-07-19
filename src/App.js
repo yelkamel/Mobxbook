@@ -12,7 +12,7 @@ import {
   StyleSheet, 
   Text, 
   View,
-  Button, 
+  Button,
   TextInput} from 'react-native';
 import {enableLogging} from 'mobx-logger';
 import { observer } from 'mobx-react';
@@ -22,6 +22,7 @@ import ReadBookView from './ReadBookView';
 
 // ajouts du store
 import BookStore from './BookStore';
+import MangaStore from './MangaStore';
 
 
 // logger configuration
@@ -37,12 +38,15 @@ enableLogging(config);
 
 const initialState = {
   title: '',
-  author: ''
+  author: '',
 }
 
 @observer 
 class App extends Component {
-  state = initialState
+  state = {
+    ...initialState,
+    isBook: true,
+  }
 
   onChangeText(key, value ) {
     this.setState({
@@ -50,10 +54,18 @@ class App extends Component {
     })
   }
 
-  addBook = () => {
-    if (this.state.title !== '' &&  this.state.author !== '') {
-      BookStore.addBook(this.state)
-      this.setState(initialState)
+  addItem = () => {
+    const { title, author, isBook} = this.state 
+    if (title !== '' &&  author !== '') {
+
+      if (isBook) {
+        BookStore.addBook(this.state)
+        this.setState({...initialState, isBook: true })
+      } else {
+        MangaStore.addManga(this.state)
+        this.setState({ ...initialState, isBook: false })
+      }
+
     }
   }
 
@@ -67,25 +79,40 @@ class App extends Component {
 
   render() {
     const { books } = BookStore
+    const {mangas} = MangaStore
 
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Book Management</Text>
 
-        <Text style={styles.instructions}>with Mobx</Text>
         <View style={styles.subcontainer}>
+          <Text style={styles.instructions}>Livres</Text>
 
         {
           books.map((book, index) => (
           <View style={styles.flexColumn} key={index}>
             <Button style={styles.textYesNo} onPress={() => this.toggleRead(book)} title={book.read ? ' yes ' : ' no '} />
             <Text style={styles.bookText}>{book.title} {book.author}</Text>
-            <DeleteBookButton book={book}/>
+            <DeleteBookButton item={book} isBook={true}/>
           </View>))
         }
         </View>
+        <View style={styles.subcontainer}>
+          <Text style={styles.instructions}>Mangas</Text>
+
+          {
+            mangas.map((manga, index) => (
+              <View style={styles.flexColumn} key={index}>
+                <Button style={styles.textYesNo} onPress={() => this.toggleRead(manga)} title={manga.read ? ' yes ' : ' no '} />
+                <Text style={styles.bookText}>{manga.title} {manga.author}</Text>
+                <DeleteBookButton item={manga} isBook={false} />
+              </View>))
+          }
+        </View>
         <ReadBookView/>
         <View style={styles.addsection}>
+          <Button onPress={() => this.setState(state => ({ ...state, isBook: !state.isBook }))} title={this.state.isBook ? 'Book' : 'Manga'} />
+
           <TextInput
             value={this.state.title}
             style={styles.input}
@@ -98,7 +125,8 @@ class App extends Component {
             onChangeText={value => this.onChangeText('author', value)}
             placeholder={"Author"}
           />
-          <Button onPress={this.addBook} title='ADD' />
+
+          <Button onPress={this.addItem} title='ADD' />
 
         </View>
       </View>
@@ -109,8 +137,8 @@ class App extends Component {
 const styles = StyleSheet.create({
   input: {
     height: 40,
-    padding: 5,
-    width: 140,
+    padding: 2,
+    width: 120,
     backgroundColor: '#F5F5F5',
     margin: 5,
   },
